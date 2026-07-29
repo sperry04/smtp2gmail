@@ -99,7 +99,7 @@ Other projects (Ghost, Discourse, or anything else needing this sidecar) integra
 
 - **Registry: GitHub Container Registry (`ghcr.io`)**, tied directly to this repo. A GitHub Actions workflow in this project builds and pushes the image on tag/release.
 - **Visibility: public.** No registry auth needed by any consuming pipeline or Droplet — a plain `docker pull`/`docker compose up` just works. This is safe because no secret (SMTP credentials, service-account key) is ever baked into the image; everything sensitive is supplied at runtime via env vars and a mounted file.
-- **Versioning**: images are tagged with semver (e.g. `ghcr.io/<org>/smtp2gmail:v0.1.0`). Consuming projects should pin to a specific version tag in their `docker-compose.yml`, never `:latest`, so an unrelated deploy of *their* project doesn't silently pick up a new, unvetted `smtp2gmail` build.
+- **Versioning**: images are tagged with semver (e.g. `ghcr.io/sperry04/smtp2gmail:v0.1.0` — published, public, and pullable with no credentials as of this writing). Consuming projects should pin to a specific version tag in their `docker-compose.yml`, never `:latest`, so an unrelated deploy of *their* project doesn't silently pick up a new, unvetted `smtp2gmail` build.
 
 ## Header rewrite policy
 

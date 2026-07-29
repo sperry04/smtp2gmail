@@ -2,7 +2,7 @@
 # See docs/integration-guide.md for the full explanation of each piece.
 services:
   smtp2gmail:
-    image: ghcr.io/<org>/smtp2gmail:<version> # pin a specific version tag, never :latest
+    image: ghcr.io/sperry04/smtp2gmail:v0.1.0 # pin a specific version tag, never :latest
     restart: unless-stopped
     environment:
       SMTP_LISTEN_PORTS: "587"

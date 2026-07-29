@@ -24,7 +24,7 @@ The consuming project needs, from whoever owns the Google Workspace being used:
 ```yaml
 services:
   smtp2gmail:
-    image: ghcr.io/<org>/smtp2gmail:<version>   # replace with the actual published image + pinned tag — never `:latest` in production
+    image: ghcr.io/sperry04/smtp2gmail:v0.1.0   # pin to a specific published tag — never `:latest` in production
     restart: unless-stopped
     environment:
       SMTP_LISTEN_PORTS: "587"
@@ -83,4 +83,4 @@ See [configuration.md](./configuration.md) for the full/authoritative reference 
 
 ## Image & versioning
 
-The image is published publicly to GitHub Container Registry: `ghcr.io/<org>/smtp2gmail`. Pin deployments to a specific version tag (e.g. `:v0.1.0`), not `:latest` — see the main [README](../README.md) for the current release/tagging scheme.
+The image is published publicly to GitHub Container Registry: `ghcr.io/sperry04/smtp2gmail`. Pin deployments to a specific version tag (e.g. `:v0.1.0`, the current first release), not `:latest` — see the main [README](../README.md) for the current release/tagging scheme.
