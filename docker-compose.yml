@@ -1,0 +1,21 @@
+# Minimal quickstart / local-dev compose file for this repo itself. Builds
+# the image from source. For wiring smtp2gmail into a *different* project as
+# a sidecar, see docs/integration-guide.md and the examples/ folder instead
+# -- those use the published ghcr.io image rather than building locally.
+services:
+  smtp2gmail:
+    build: .
+    restart: unless-stopped
+    environment:
+      SMTP_LISTEN_PORTS: "587"
+      SMTP_USERNAME: "smtp2gmail"
+      SMTP_PASSWORD: "${SMTP_RELAY_PASSWORD:?set SMTP_RELAY_PASSWORD in your environment or .env file}"
+      GMAIL_SEND_AS: "${GMAIL_SEND_AS:?set GMAIL_SEND_AS to the Workspace address to send as}"
+      GMAIL_SA_KEY_FILE: "/secrets/service-account.json"
+    volumes:
+      - ./secrets/service-account.json:/secrets/service-account.json:ro
+    ports:
+      # Only for local testing against this repo directly. A sidecar
+      # deployment alongside a real app should NOT publish this port -- see
+      # docs/integration-guide.md and README "Security considerations".
+      - "127.0.0.1:2525:587"

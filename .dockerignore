@@ -1,0 +1,9 @@
+.git
+*-key.json
+secrets/
+.env
+.env.*
+docs/
+examples/
+scripts/
+README.md

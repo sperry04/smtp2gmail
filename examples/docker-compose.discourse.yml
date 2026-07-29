@@ -1,0 +1,42 @@
+# Illustrative example: wiring smtp2gmail as a sidecar for Discourse.
+# See docs/integration-guide.md for the full explanation of each piece.
+#
+# Note: Discourse's official deployment path uses app.yml + its launcher
+# script rather than a plain docker-compose file; if you're using that
+# standard method, translate the environment variables below into your
+# app.yml's `env:` section instead. This file assumes a community/custom
+# docker-compose-based Discourse setup that reads these SMTP env vars
+# directly.
+services:
+  smtp2gmail:
+    image: ghcr.io/<org>/smtp2gmail:<version> # pin a specific version tag, never :latest
+    restart: unless-stopped
+    environment:
+      SMTP_LISTEN_PORTS: "587"
+      SMTP_USERNAME: "discourse"
+      SMTP_PASSWORD: "${SMTP_RELAY_PASSWORD:?}"
+      GMAIL_SEND_AS: "no_reply@yourdomain.com"
+      GMAIL_SA_KEY_FILE: "/secrets/service-account.json"
+    volumes:
+      - ./secrets/service-account.json:/secrets/service-account.json:ro
+    networks:
+      - internal
+    # No `ports:` here -- must only be reachable from discourse on the internal network.
+
+  discourse:
+    image: discourse/discourse:latest
+    restart: unless-stopped
+    environment:
+      DISCOURSE_SMTP_ADDRESS: smtp2gmail
+      DISCOURSE_SMTP_PORT: 587
+      DISCOURSE_SMTP_USER_NAME: "discourse"
+      DISCOURSE_SMTP_PASSWORD: "${SMTP_RELAY_PASSWORD:?}"
+      DISCOURSE_SMTP_ENABLE_START_TLS: "false"
+    networks:
+      - internal
+    depends_on:
+      - smtp2gmail
+
+networks:
+  internal:
+    internal: true

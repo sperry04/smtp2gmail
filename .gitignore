@@ -1,0 +1,19 @@
+# Google service-account keys and other secrets - never commit these
+*-key.json
+secrets/
+.env
+.env.*
+!.env.example
+
+# Go build artifacts
+/bin/
+/dist/
+*.exe
+*.test
+*.out
+
+# OS / editor
+.DS_Store
+.idea/
+.vscode/
+*.swp

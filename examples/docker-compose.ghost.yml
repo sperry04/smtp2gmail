@@ -1,0 +1,35 @@
+# Illustrative example: wiring smtp2gmail as a sidecar for a Ghost blog.
+# See docs/integration-guide.md for the full explanation of each piece.
+services:
+  smtp2gmail:
+    image: ghcr.io/<org>/smtp2gmail:<version> # pin a specific version tag, never :latest
+    restart: unless-stopped
+    environment:
+      SMTP_LISTEN_PORTS: "587"
+      SMTP_USERNAME: "ghost"
+      SMTP_PASSWORD: "${SMTP_RELAY_PASSWORD:?}"
+      GMAIL_SEND_AS: "no_reply@yourdomain.com"
+      GMAIL_SA_KEY_FILE: "/secrets/service-account.json"
+    volumes:
+      - ./secrets/service-account.json:/secrets/service-account.json:ro
+    networks:
+      - internal
+    # No `ports:` here -- must only be reachable from ghost on the internal network.
+
+  ghost:
+    image: ghost:latest
+    restart: unless-stopped
+    environment:
+      mail__transport: SMTP
+      mail__options__host: smtp2gmail
+      mail__options__port: 587
+      mail__options__auth__user: "ghost"
+      mail__options__auth__pass: "${SMTP_RELAY_PASSWORD:?}"
+    networks:
+      - internal
+    depends_on:
+      - smtp2gmail
+
+networks:
+  internal:
+    internal: true
